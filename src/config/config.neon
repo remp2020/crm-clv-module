@@ -1,0 +1,13 @@
+services:
+	moduleManager:
+		setup:
+			- addModule(Crm\ClvModule\ClvModule())
+
+	# Commands
+	- Crm\ClvModule\Commands\ComputeClvCommand
+
+	# Components
+	- Crm\ClvModule\Components\CustomerLifetimeValue\CustomerLifetimeValue
+
+	# Repositories
+	- Crm\ClvModule\Repositories\CustomerLifetimeValuesRepository

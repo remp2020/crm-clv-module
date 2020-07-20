@@ -1,0 +1,17 @@
+{
+  "name": "remp/crm-clv-module",
+  "description": "CRM CLV (Customer Lifetime Value) Module",
+  "type": "library",
+  "homepage": "https://remp2020.com",
+  "license": "MIT",
+  "require": {
+    "php": "^7.2",
+    "markrogoyski/math-php": "^1.1"
+  },
+  "minimum-stability": "dev",
+  "autoload": {
+    "psr-4": {
+      "Crm\\ClvModule\\": "src/"
+    }
+  }
+}

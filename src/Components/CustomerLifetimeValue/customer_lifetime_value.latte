@@ -1,0 +1,67 @@
+<style>
+    .clv-thermometer, .clv-thermometer .quartile {
+        position: relative;
+    }
+    .clv-thermometer .q4 {
+        background-color: rgb(176, 176, 176);
+    }
+    .clv-thermometer .q3 {
+        background-color: rgba(176, 176, 176, 0.75);
+    }
+    .clv-thermometer .q2 {
+        background-color: rgba(176, 176, 176, 0.5);
+    }
+    .clv-thermometer .q1 {
+        background-color: rgba(176, 176, 176, 0.25);
+    }
+    .clv-thermometer .quartile span.quartile-label{
+        width:100%;
+        text-align:right;
+        position: absolute;
+        bottom:0;
+    }
+
+    .dashed-help {
+        text-decoration-line: underline;
+        text-decoration-style: dashed;
+        cursor: help;
+    }
+</style>
+
+<div class="panel panel-default">
+  <div class="panel-heading">{_clv.admin.clv.header}</div>
+  <div class="panel-body">
+	{if $clv}
+        <div class="clv-thermometer">
+            <div class="quartile q4" style="height: {$quartiles['q4']}px">
+                <span class="quartile-label">75<sup>th</sup> percentile ({$clv->percentile_75_amount|price})</span>
+            </div>
+            <div class="quartile q3" style="height: {$quartiles['q3']}px">
+                <span class="quartile-label">50<sup>th</sup> percentile ({$clv->percentile_50_amount|price})</span>
+            </div>
+            <div class="quartile q2" style="height: {$quartiles['q2']}px">
+                <span class="quartile-label">25<sup>th</sup> percentile ({$clv->percentile_25_amount|price})</span>
+            </div>
+            <div class="quartile q1" style="height: {$quartiles['q1']}px">
+            </div>
+
+            <div class="userValue"
+                 style="padding-left: 5px; border-bottom: 2px solid #000; width: 100%; position: absolute; bottom: {$quartiles['userValue']}px;">
+                <span class="dashed-help" title="{_clv.admin.clv.user_amount_explanation}">{$clv->period_amount|price}</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 10px">
+            <p>
+            <span class="text text-muted"><strong>{_clv.admin.clv.last_updated}:</strong>
+                <span class="dashed-help" title="{_clv.admin.clv.period}: {$clv->period_start|userDate} - {$clv->period_end|userDate}">{$clv->updated_at|userDate}</span>
+            </span>
+            </p>
+            <p class="small text text-muted">{_clv.admin.clv.clv_description}</p>
+        </div>
+
+	{else}
+        <p class="bg-warning">{_clv.admin.clv.no_clv}</p>
+	{/if}
+  </div>
+</div>
