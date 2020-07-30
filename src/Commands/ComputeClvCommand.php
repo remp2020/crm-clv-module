@@ -23,6 +23,8 @@ class ComputeClvCommand extends Command
 
     private $calculatedQuartiles;
 
+    private $parameterOctilesForBins = [];
+
     private $customerLifetimeValuesRepository;
 
     public function __construct(
@@ -69,6 +71,34 @@ class ComputeClvCommand extends Command
 
         $output->writeln(' * Fetched user IDs, starting processing.' . $this->memory());
 
+        // For these parameters, only a single value will be chosen based on a subscription having the biggest partial_amount (and max start_time)
+        $parametersToDecide = [
+            'subscription_type_id' => [],
+            'is_recurrent' => [],
+            'type' => [],
+            'length' => [],
+            'amount' => [],
+            'payment_gateway_id' => [],
+        ];
+
+        // Values of these parameters will be divided into bins (8 bins - decided according to octile values)
+        // Each parameter will be then replaced by a bin number
+        $parametersToBin = [
+            'period_paid_sub_count' => 0,
+            'period_amount' => 0,
+            'period_active_days' => 0,
+            'days_since_first_paid_sub' => null,
+            'partial_amount' => 0,
+            'last_sign_in_days' => null,
+            'created_at_in_days' => null,
+            'last_access_date_in_days' => null,
+        ];
+
+        $parameterValues = [];
+        foreach (array_keys($parametersToBin) as $paramName) {
+            $parameterValues[$paramName] = [];
+        }
+
         foreach (array_chunk($userIds, 10000) as $userIdsChunk) {
             $sql = <<<SQL
 SELECT s.user_id, s.start_time, s.end_time, s.length, s.subscription_type_id, s.type, s.is_recurrent, p.amount, p.payment_gateway_id,
@@ -84,28 +114,10 @@ SQL;
 
             $subscriptions = $this->subscriptionsRepository->getDatabase()->query($sql, $periodEnd, $periodStart, $userIdsChunk);
 
-            // For these parameters, only a single value will be chosen based on a subscription having the biggest partial_amount (and max start_time)
-            $parametersToDecide = [
-                'subscription_type_id' => [],
-                'is_recurrent' => [],
-                'type' => [],
-                'length' => [],
-                'amount' => [],
-                'payment_gateway_id' => [],
-            ];
-
             foreach ($subscriptions as $sub) {
                 if (!array_key_exists($sub->user_id, $userData)) {
-                    $userData[$sub->user_id] = [
-                        'period_paid_sub_count' => 0,
-                        'period_amount' => 0,
-                        'period_active_days' => 0,
-                        'days_since_first_paid_sub' => null,
-                        'partial_amount' => 0,
-                        'last_sign_in_days' => null,
-                        'created_at_in_days' => null,
-                        '_decide' => $parametersToDecide, // helper parameter, will be unset later
-                    ];
+                    // _decide is helper parameter, will be unset later
+                    $userData[$sub->user_id] = array_merge($parametersToBin, ['_decide' => $parametersToDecide]);
                 }
 
                 $userData[$sub->user_id]['period_paid_sub_count']++;
@@ -115,10 +127,13 @@ SQL;
                 $userData[$sub->user_id]['created_at_in_days'] = $sub->created_at_in_days;
 
                 if ($sub->amount > 0) {
-                    $userData[$sub->user_id]['days_since_first_paid_sub'] = min(array_filter([
-                        $userData[$sub->user_id]['days_since_first_paid_sub'],
-                        (int) (($periodEnd->getTimestamp() - $sub->start_time->getTimestamp()) / self::SECONDS_IN_DAY)
-                    ]));
+                    $days = (int) (($periodEnd->getTimestamp() - $sub->start_time->getTimestamp()) / self::SECONDS_IN_DAY);
+
+                    if (isset($userData[$sub->user_id]['days_since_first_paid_sub'])) {
+                        $userData[$sub->user_id]['days_since_first_paid_sub'] = min($days, $userData[$sub->user_id]['days_since_first_paid_sub']);
+                    } else {
+                        $userData[$sub->user_id]['days_since_first_paid_sub'] = $days;
+                    }
                 }
 
                 $subscriptionIntervalStart = max($sub->start_time, $periodStart);
@@ -189,9 +204,22 @@ SQL;
                 }
             }
 
+            // Record value to set (to compute bins later)
+            foreach ($userIdsChunk as $userId) {
+                foreach (array_keys($parametersToBin) as $paramName) {
+                    if (isset($userData[$userId])) {
+                        $parameterValue = (string) $userData[$userId][$paramName];
+                        $parameterValues[$paramName][$parameterValue] = true;
+                    }
+                }
+            }
+
             $output->writeln('   * Processed <info>' . count($userIdsChunk) . '</info> user IDs, aggregated data size: <info>' . count($userData) . '</info>' . $this->memory());
         }
 
+        $this->calcuateUserParameterOctiles($parameterValues);
+        unset($parameterValues);
+        $this->calculateParameterBins($output, $userData);
         $this->calculateUserParameterValuesQuartiles($output, $userData);
 
         $output->writeln(' * User amounts are sorted. Starting to compute actual CLVs.' . $this->memory());
@@ -199,7 +227,7 @@ SQL;
         $i = 1;
         $total = count($userData);
         foreach ($userData as $userId => $userValues) {
-            $percentiles = $this->percentiles($userValues);
+            $percentiles = $this->averagedPercentiles($userValues);
             if ($i % 5000 === 0) {
                 $output->writeln("   * CLV computed for {$i}/{$total} users" . $this->memory());
             }
@@ -219,6 +247,48 @@ SQL;
         }
         $output->writeln(' * Customer lifetime values updated for total <info>' . count($userData) . '</info> users.');
         return 0;
+    }
+
+    private function calculateParameterBins(OutputInterface $output, array &$userData)
+    {
+        $output->writeln(' * Putting user parameters to octile bins.' . $this->memory());
+        foreach ($userData as $userId => $userValues) {
+            foreach ($this->parameterOctilesForBins as $paramName => $octile) {
+                // bin:0 = [0 - 12.5)
+                // bin:1 = [12.5, 25)
+                // bin:2 = [25, 37.5)
+                // bin:3 = [37.5, 50)
+                // bin:4 = [50, 62.5)
+                // bin:5 = [50, 62.5)
+                // bin:5 = [62.5, 75)
+                // bin:6 = [75, 87.5)
+                // bin:7 = [87.5, 100]
+
+                if ($userValues[$paramName] < $octile['12.5']) {
+                    $binNumber = 0;
+                } elseif ($userValues[$paramName] < $octile['25']) {
+                    $binNumber = 1;
+                } elseif ($userValues[$paramName] < $octile['37.5']) {
+                    $binNumber = 2;
+                } elseif ($userValues[$paramName] < $octile['50']) {
+                    $binNumber = 3;
+                } elseif ($userValues[$paramName] < $octile['62.5']) {
+                    $binNumber = 4;
+                } elseif ($userValues[$paramName] < $octile['75']) {
+                    $binNumber = 5;
+                } elseif ($userValues[$paramName] < $octile['87.5']) {
+                    $binNumber = 6;
+                } else {
+                    $binNumber = 7;
+                }
+
+                // Period amount is required later for quartiles computation
+                if ($paramName !== 'period_amount') {
+                    unset($userData[$userId][$paramName]);
+                }
+                $userData[$userId][$paramName . '_bin'] = $binNumber;
+            }
+        }
     }
 
     /**
@@ -243,6 +313,30 @@ SQL;
         return array_values($result);
     }
 
+
+    /**
+     * For each parameter in $parameterValues array, compute quantiles from provided array of all occurring values
+     * @param array $parameterValues
+     */
+    private function calcuateUserParameterOctiles(array &$parameterValues)
+    {
+        foreach ($parameterValues as $paramName => $valuesSet) {
+            $values = array_filter(array_keys($valuesSet));
+            sort($values);
+            $this->parameterOctilesForBins[$paramName] = [
+                '0' => Descriptive::percentile($values, 0),
+                '12.5' => Descriptive::percentile($values, 12.5),
+                '25' => Descriptive::percentile($values, 25),
+                '37.5' => Descriptive::percentile($values, 37.5),
+                '50' => Descriptive::percentile($values, 50),
+                '62.5' => Descriptive::percentile($values, 62.5),
+                '75' => Descriptive::percentile($values, 75),
+                '87.5' => Descriptive::percentile($values, 87.5),
+                '100' => Descriptive::percentile($values, 100),
+            ];
+        }
+    }
+
     /**
      * For each parameter (e.g. subscription_type_id) and possible parameter value (e.g. subscription_type_id = 84)
      * prepare array of period_amounts spent by users having given value of this parameter.
@@ -259,6 +353,12 @@ SQL;
         $sortedUserAmountsInPeriod = [];
         foreach ($userData as $userId => $userValues) {
             foreach ($userValues as $paramKey => $value) {
+                if ($paramKey === 'period_amount') {
+                    // period_amount has already have its bin, therefore skipping computing quartiles
+                    // we need in because of computation of other quartiles
+                    continue;
+                }
+
                 $valueString = $this->userValueToString($value);
 
                 if (!array_key_exists($paramKey, $sortedUserAmountsInPeriod)) {
@@ -280,6 +380,7 @@ SQL;
             foreach ($values as $value => $amounts) {
                 $valueString = $this->userValueToString($value);
                 $quartilesKey = $this->quartilesKey($paramKey, $valueString);
+                // Sort is included in Descriptive::quartiles() function call
                 $this->calculatedQuartiles[$quartilesKey] = Descriptive::quartiles($amounts);
             }
         }
@@ -294,10 +395,15 @@ SQL;
      * It calculates amount-based spent percentiles for each parameter separately. Afterwards it averages out
      * percentile for each parameter and returns this as a final percentile that can be used to visualize CLV.
      */
-    private function percentiles(array $userParameters): array
+    private function averagedPercentiles(array $userParameters): array
     {
         $parameterPercentiles = [];
         foreach ($userParameters as $parameter => $value) {
+            if ($parameter === 'period_amount') {
+                continue;
+                // 'period_amount has already has its bin, therefore skipping
+            }
+
             $valueString = $this->userValueToString($value);
 
             $quartilesKey = $this->quartilesKey($parameter, $valueString);
