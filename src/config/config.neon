@@ -9,5 +9,8 @@ services:
 	# Components
 	- Crm\ClvModule\Components\CustomerLifetimeValue\CustomerLifetimeValue
 
+	# Criteria
+	- Crm\ClvModule\Models\Scenarios\CustomerLifetimeValueCriteria
+
 	# Repositories
 	- Crm\ClvModule\Repositories\CustomerLifetimeValuesRepository
