@@ -2,7 +2,7 @@
 
 namespace Crm\ClvModule\Models\Scenarios;
 
-use Crm\ApplicationModule\Criteria\Params\StringLabeledArrayParam;
+use Crm\ApplicationModule\Criteria\ScenarioParams\StringLabeledArrayParam;
 use Crm\ApplicationModule\Criteria\ScenariosCriteriaInterface;
 use Nette\Database\Table\IRow;
 use Nette\Database\Table\Selection;
