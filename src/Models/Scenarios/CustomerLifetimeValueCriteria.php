@@ -40,8 +40,10 @@ class CustomerLifetimeValueCriteria implements ScenariosCriteriaInterface
         ];
     }
 
-    public function addCondition(Selection $selection, $values, IRow $criterionItemRow): bool
+    public function addConditions(Selection $selection, array $paramValues, IRow $criterionItemRow): bool
     {
+        $values = $paramValues['clv_bucket'];
+
         $conditions = [];
         foreach ($values->selection as $option) {
             switch ($option) {

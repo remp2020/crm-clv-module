@@ -100,7 +100,7 @@ class CustomerLifetimeValueCriteriaTest extends DatabaseTestCase
         ];
 
         $query = $this->usersRepository->getTable();
-        $conditionAdded = $this->criteria->addCondition($query, $conditionValues, $user);
+        $conditionAdded = $this->criteria->addConditions($query, ['clv_bucket' => $conditionValues], $user);
         return $conditionAdded && (bool) $query->fetch();
     }
 }
