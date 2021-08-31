@@ -3,7 +3,6 @@
 namespace Crm\ClvModule\DI;
 
 use Kdyby\Translation\DI\ITranslationProvider;
-use Nette\DI\Compiler;
 use Nette\DI\CompilerExtension;
 
 class ClvModuleExtension extends CompilerExtension implements ITranslationProvider
@@ -11,8 +10,7 @@ class ClvModuleExtension extends CompilerExtension implements ITranslationProvid
     public function loadConfiguration()
     {
         // load services from config and register them to Nette\DI Container
-        Compiler::loadDefinitions(
-            $this->getContainerBuilder(),
+        $this->compiler->loadDefinitionsFromConfig(
             $this->loadFromFile(__DIR__ . '/../config/config.neon')['services']
         );
     }
