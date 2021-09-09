@@ -175,15 +175,15 @@ SQL;
                                 return -1;
                             }
                             if ($a['partial_amount'] > $b['partial_amount']) {
-                                return 1;
+                                return Command::FAILURE;
                             }
                             if ($a['start_time'] < $b['start_time']) {
                                 return -1;
                             }
                             if ($a['start_time'] > $b['start_time']) {
-                                return 1;
+                                return Command::FAILURE;
                             }
-                            return 0;
+                            return Command::SUCCESS;
                         });
 
                         $userData[$userId][$paramToDecide] = array_key_last($counts);
@@ -246,7 +246,7 @@ SQL;
             $i++;
         }
         $output->writeln(' * Customer lifetime values updated for total <info>' . count($userData) . '</info> users.');
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function calculateParameterBins(OutputInterface $output, array &$userData)
