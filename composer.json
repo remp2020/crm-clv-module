@@ -11,8 +11,7 @@
   "minimum-stability": "dev",
   "autoload": {
     "psr-4": {
-      "Crm\\ClvModule\\": "src/",
-      "Crm\\ClvModule\\Tests\\": "tests/"
+      "Crm\\ClvModule\\": "src/"
     }
   }
 }
