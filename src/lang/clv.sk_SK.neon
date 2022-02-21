@@ -1,17 +1,17 @@
 admin:
-	clv:
-		header: "Customer Lifetime Value (CLV)"
-		no_clv: "Používateľ nemá žiadne predplatné v nedávnej dobe, CLV nebolo vypočítané."
-		period: Obdobie
-		last_updated: Aktualizácia
-		user_amount_explanation: "Čiastka zaplatená používateľom v danom období."
-		clv_description: "Výpočet je založený na dátach a aktivite za vybrané obdobie a porovnáva výnos používateľa s výnosom jemu podobných používateľov."
+    clv:
+        header: "Customer Lifetime Value (CLV)"
+        no_clv: "Používateľ nemá žiadne predplatné v nedávnej dobe, CLV nebolo vypočítané."
+        period: Obdobie
+        last_updated: Aktualizácia
+        user_amount_explanation: "Čiastka zaplatená používateľom v danom období."
+        clv_description: "Výpočet je založený na dátach a aktivite za vybrané obdobie a porovnáva výnos používateľa s výnosom jemu podobných používateľov."
 
 criteria:
-	clv_bucket:
-		label: "Hodnota používateľa (CLV)"
-		bucket_label: "Percentil CLV"
-		"25": 0.-25. percentil
-		"50": 25.-50. percentil
-		"75": 50.-75. percentil
-		"100": 75.-100. percentil
+    clv_bucket:
+        label: "Hodnota používateľa (CLV)"
+        bucket_label: "Percentil CLV"
+        "25": 0.-25. percentil
+        "50": 25.-50. percentil
+        "75": 50.-75. percentil
+        "100": 75.-100. percentil
