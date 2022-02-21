@@ -9,9 +9,9 @@ admin:
 
 criteria:
 	clv_bucket:
-		label: User's CLV performance
+		label: "User's CLV performance"
 		bucket_label: "CLV percentile"
-		25: 0th-25th percentile
-		50: 25th-50th percentile
-		75: 50th-75th percentile
-		100: 75th-100th percentile
+		"25": 0th-25th percentile
+		"50": 25th-50th percentile
+		"75": 50th-75th percentile
+		"100": 75th-100th percentile

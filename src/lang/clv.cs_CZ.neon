@@ -11,7 +11,7 @@ criteria:
 	clv_bucket:
 		label: "Hodnota uživatele (CLV)"
 		bucket_label: "Percentil CLV"
-		25: 0.-25. percentil
-		50: 25.-50. percentil
-		75: 50.-75. percentil
-		100: 75.-100. percentil
+		"25": 0.-25. percentil
+		"50": 25.-50. percentil
+		"75": 50.-75. percentil
+		"100": 75.-100. percentil
