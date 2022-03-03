@@ -1,5 +1,7 @@
 # CRM CLV Module
 
+[![Translation status @ Weblate](https://hosted.weblate.org/widgets/remp-crm/-/clv-module/svg-badge.svg)](https://hosted.weblate.org/projects/remp-crm/clv-module/)
+
 ## Installing module
 
 We recommend using Composer for installation and update management.
