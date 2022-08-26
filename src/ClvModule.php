@@ -5,7 +5,7 @@ namespace Crm\ClvModule;
 use Crm\ApplicationModule\Commands\CommandsContainerInterface;
 use Crm\ApplicationModule\Criteria\ScenariosCriteriaStorage;
 use Crm\ApplicationModule\CrmModule;
-use Crm\ApplicationModule\Widget\WidgetManagerInterface;
+use Crm\ApplicationModule\Widget\LazyWidgetManagerInterface;
 use Crm\ClvModule\Commands\ComputeClvCommand;
 use Crm\ClvModule\Components\CustomerLifetimeValue\CustomerLifetimeValue;
 use Crm\ClvModule\Models\Scenarios\CustomerLifetimeValueCriteria;
@@ -17,11 +17,11 @@ class ClvModule extends CrmModule
         $commandsContainer->registerCommand($this->getInstance(ComputeClvCommand::class));
     }
 
-    public function registerWidgets(WidgetManagerInterface $widgetManager)
+    public function registerLazyWidgets(LazyWidgetManagerInterface $widgetManager)
     {
         $widgetManager->registerWidget(
             'admin.user.detail.box',
-            $this->getInstance(CustomerLifetimeValue::class),
+            CustomerLifetimeValue::class,
             1800
         );
     }

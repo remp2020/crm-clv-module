@@ -2,8 +2,8 @@
 
 namespace Crm\ClvModule\Components\CustomerLifetimeValue;
 
-use Crm\ApplicationModule\Widget\BaseWidget;
-use Crm\ApplicationModule\Widget\WidgetManager;
+use Crm\ApplicationModule\Widget\BaseLazyWidget;
+use Crm\ApplicationModule\Widget\LazyWidgetManager;
 use Crm\ClvModule\Repositories\CustomerLifetimeValuesRepository;
 
 /**
@@ -11,7 +11,7 @@ use Crm\ClvModule\Repositories\CustomerLifetimeValuesRepository;
  *
  * @package Crm\ClvModule\Components
  */
-class CustomerLifetimeValue extends BaseWidget
+class CustomerLifetimeValue extends BaseLazyWidget
 {
     private const DEFAULT_THERMOMETER_HEIGHT_PX = 200;
     private const MIN_THERMOMETER_QUARTILE_HEIGHT_PX = 30;
@@ -22,10 +22,10 @@ class CustomerLifetimeValue extends BaseWidget
     private $customerLifetimeValuesRepository;
 
     public function __construct(
-        WidgetManager $widgetManager,
+        LazyWidgetManager $lazyWidgetManager,
         CustomerLifetimeValuesRepository $customerLifetimeValuesRepository
     ) {
-        parent::__construct($widgetManager);
+        parent::__construct($lazyWidgetManager);
         $this->customerLifetimeValuesRepository = $customerLifetimeValuesRepository;
     }
 
