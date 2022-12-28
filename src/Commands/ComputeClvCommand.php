@@ -309,7 +309,7 @@ SQL;
             ->group('user_id')
             ->getSql();
 
-        $result = $this->subscriptionsRepository->getDatabase()->queryArgs($query, array_values($args))->fetchAssoc('user_id=user_id');
+        $result = $this->subscriptionsRepository->getDatabase()->query($query, ...array_values($args))->fetchAssoc('user_id=user_id');
         return array_values($result);
     }
 
