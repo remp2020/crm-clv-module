@@ -147,22 +147,23 @@ SQL;
                 $userData[$sub->user_id]['partial_amount'] += $partialAmount;
 
                 foreach ($userData[$sub->user_id]['_decide'] as $paramToDecide => $counts) {
-                    if (!array_key_exists((string) $sub->$paramToDecide, $counts)) {
-                        $userData[$sub->user_id]['_decide'][$paramToDecide][$sub->$paramToDecide] = [
-                            'partial_amount' => 0,
+                    $valueToDecide = (string) $sub->$paramToDecide;
+                    if (!array_key_exists($valueToDecide, $counts)) {
+                        $userData[$sub->user_id]['_decide'][$paramToDecide][$valueToDecide] = [
+                            'partial_amount' => 0.00,
                             'start_time' => null,
                         ];
                     }
 
-                    $userData[$sub->user_id]['_decide'][$paramToDecide][$sub->$paramToDecide]['partial_amount'] += $partialAmount;
+                    $userData[$sub->user_id]['_decide'][$paramToDecide][$valueToDecide]['partial_amount'] += $partialAmount;
 
                     // array_filter clears null (initial value) if present
                     $startTimes = array_filter([
-                        $userData[$sub->user_id]['_decide'][$paramToDecide][$sub->$paramToDecide]['start_time'],
+                        $userData[$sub->user_id]['_decide'][$paramToDecide][$valueToDecide]['start_time'],
                         $sub->start_time
                     ]);
 
-                    $userData[$sub->user_id]['_decide'][$paramToDecide][$sub->$paramToDecide]['start_time'] = max($startTimes);
+                    $userData[$sub->user_id]['_decide'][$paramToDecide][$valueToDecide]['start_time'] = max($startTimes);
                 }
             }
             $subscriptions = null;
