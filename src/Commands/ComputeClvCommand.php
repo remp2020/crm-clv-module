@@ -102,7 +102,7 @@ class ComputeClvCommand extends Command
         foreach (array_chunk($userIds, 10000) as $userIdsChunk) {
             $sql = <<<SQL
 SELECT s.user_id, s.start_time, s.end_time, s.length, s.subscription_type_id, s.type, s.is_recurrent, p.amount, p.payment_gateway_id,
-DATEDIFF(NOW(), u.last_sign_in_at) AS last_sign_in_days,
+DATEDIFF(NOW(), u.current_sign_in_at) AS last_sign_in_days,
 DATEDIFF(NOW(), u.created_at) AS created_at_in_days
 FROM subscriptions s
 JOIN users u ON u.id = s.user_id
