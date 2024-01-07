@@ -2,7 +2,7 @@
 
 namespace Crm\ClvModule\Commands;
 
-use Crm\ApiModule\Repository\UserSourceAccessesRepository;
+use Crm\ApiModule\Repositories\UserSourceAccessesRepository;
 use Crm\ClvModule\Repositories\CustomerLifetimeValuesRepository;
 use Crm\SubscriptionsModule\Repository\SubscriptionsRepository;
 use MathPHP\Exception\BadDataException;
