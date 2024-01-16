@@ -5,6 +5,7 @@ namespace Crm\ClvModule\Commands;
 use Crm\ApiModule\Repository\UserSourceAccessesRepository;
 use Crm\ClvModule\Repositories\CustomerLifetimeValuesRepository;
 use Crm\SubscriptionsModule\Repository\SubscriptionsRepository;
+use MathPHP\Exception\BadDataException;
 use MathPHP\Statistics\Average;
 use MathPHP\Statistics\Descriptive;
 use Nette\Utils\DateTime;
@@ -347,7 +348,7 @@ SQL;
      *
      * @param OutputInterface $output
      * @param array $userData
-     * @throws \MathPHP\Exception\BadDataException
+     * @throws BadDataException
      */
     private function calculateUserParameterValuesQuartiles(OutputInterface $output, array &$userData)
     {
