@@ -4,7 +4,7 @@ namespace Crm\ClvModule\Commands;
 
 use Crm\ApiModule\Repositories\UserSourceAccessesRepository;
 use Crm\ClvModule\Repositories\CustomerLifetimeValuesRepository;
-use Crm\SubscriptionsModule\Repository\SubscriptionsRepository;
+use Crm\SubscriptionsModule\Repositories\SubscriptionsRepository;
 use MathPHP\Exception\BadDataException;
 use MathPHP\Statistics\Average;
 use MathPHP\Statistics\Descriptive;
