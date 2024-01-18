@@ -5,8 +5,8 @@ namespace Crm\ClvModule\Tests;
 use Crm\ApplicationModule\Tests\DatabaseTestCase;
 use Crm\ClvModule\Models\Scenarios\CustomerLifetimeValueCriteria;
 use Crm\ClvModule\Repositories\CustomerLifetimeValuesRepository;
-use Crm\UsersModule\Auth\UserManager;
-use Crm\UsersModule\Repository\UsersRepository;
+use Crm\UsersModule\Models\Auth\UserManager;
+use Crm\UsersModule\Repositories\UsersRepository;
 use Nette\Utils\DateTime;
 
 class CustomerLifetimeValueCriteriaTest extends DatabaseTestCase
