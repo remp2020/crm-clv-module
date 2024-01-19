@@ -2,10 +2,10 @@
 
 namespace Crm\ClvModule;
 
-use Crm\ApplicationModule\Commands\CommandsContainerInterface;
-use Crm\ApplicationModule\Criteria\ScenariosCriteriaStorage;
+use Crm\ApplicationModule\Application\CommandsContainerInterface;
 use Crm\ApplicationModule\CrmModule;
-use Crm\ApplicationModule\Widget\LazyWidgetManagerInterface;
+use Crm\ApplicationModule\Models\Criteria\ScenariosCriteriaStorage;
+use Crm\ApplicationModule\Models\Widget\LazyWidgetManagerInterface;
 use Crm\ClvModule\Commands\ComputeClvCommand;
 use Crm\ClvModule\Components\CustomerLifetimeValue\CustomerLifetimeValue;
 use Crm\ClvModule\Models\Scenarios\CustomerLifetimeValueCriteria;

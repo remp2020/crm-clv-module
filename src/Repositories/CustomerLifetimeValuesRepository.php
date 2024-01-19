@@ -2,7 +2,7 @@
 
 namespace Crm\ClvModule\Repositories;
 
-use Crm\ApplicationModule\Repository;
+use Crm\ApplicationModule\Models\Database\Repository;
 use Nette\Utils\DateTime;
 
 class CustomerLifetimeValuesRepository extends Repository
