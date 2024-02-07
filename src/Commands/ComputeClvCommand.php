@@ -177,15 +177,15 @@ SQL;
                                 return -1;
                             }
                             if ($a['partial_amount'] > $b['partial_amount']) {
-                                return Command::FAILURE;
+                                return 1;
                             }
                             if ($a['start_time'] < $b['start_time']) {
                                 return -1;
                             }
                             if ($a['start_time'] > $b['start_time']) {
-                                return Command::FAILURE;
+                                return 1;
                             }
-                            return Command::SUCCESS;
+                            return 0;
                         });
 
                         $userData[$userId][$paramToDecide] = array_key_last($counts);
