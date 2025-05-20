@@ -18,7 +18,7 @@ class CustomerLifetimeValuesRepository extends Repository
         float $percentile25Amount,
         float $percentile50Amount,
         float $percentile75Amount,
-        float $percentile100Amount
+        float $percentile100Amount,
     ) {
         $now = new DateTime();
 
@@ -31,7 +31,7 @@ class CustomerLifetimeValuesRepository extends Repository
             'percentile_50_amount' => $percentile50Amount,
             'percentile_75_amount' => $percentile75Amount,
             'percentile_100_amount' => $percentile100Amount,
-            'updated_at' => $now
+            'updated_at' => $now,
         ];
 
         $row = $this->findBy('user_id', $userId);

@@ -22,7 +22,7 @@ class ClvModule extends CrmModule
         $widgetManager->registerWidget(
             'admin.user.detail.box',
             CustomerLifetimeValue::class,
-            1800
+            1800,
         );
     }
 
@@ -31,7 +31,7 @@ class ClvModule extends CrmModule
         $scenariosCriteriaStorage->register(
             'user',
             'clv_bucket',
-            $this->getInstance(CustomerLifetimeValueCriteria::class)
+            $this->getInstance(CustomerLifetimeValueCriteria::class),
         );
     }
 }

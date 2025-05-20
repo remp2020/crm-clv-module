@@ -23,7 +23,7 @@ class CustomerLifetimeValue extends BaseLazyWidget
 
     public function __construct(
         LazyWidgetManager $lazyWidgetManager,
-        CustomerLifetimeValuesRepository $customerLifetimeValuesRepository
+        CustomerLifetimeValuesRepository $customerLifetimeValuesRepository,
     ) {
         parent::__construct($lazyWidgetManager);
         $this->customerLifetimeValuesRepository = $customerLifetimeValuesRepository;

@@ -35,7 +35,7 @@ class CustomerLifetimeValueCriteria implements ScenariosCriteriaInterface
             new StringLabeledArrayParam(
                 'clv_bucket',
                 $this->translator->translate('clv.criteria.clv_bucket.bucket_label'),
-                $options
+                $options,
             ),
         ];
     }

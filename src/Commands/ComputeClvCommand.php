@@ -31,7 +31,7 @@ class ComputeClvCommand extends Command
     public function __construct(
         SubscriptionsRepository $subscriptionsRepository,
         UserSourceAccessesRepository $userSourceAccessesRepository,
-        CustomerLifetimeValuesRepository $customerLifetimeValuesRepository
+        CustomerLifetimeValuesRepository $customerLifetimeValuesRepository,
     ) {
         parent::__construct();
         $this->subscriptionsRepository = $subscriptionsRepository;
@@ -47,7 +47,7 @@ class ComputeClvCommand extends Command
                 'memory_limit',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Optionally sets PHP script execution memory_limit to given value (in MiBs).'
+                'Optionally sets PHP script execution memory_limit to given value (in MiBs).',
             );
     }
 
@@ -161,7 +161,7 @@ SQL;
                     // array_filter clears null (initial value) if present
                     $startTimes = array_filter([
                         $userData[$sub->user_id]['_decide'][$paramToDecide][$valueToDecide]['start_time'],
-                        $sub->start_time
+                        $sub->start_time,
                     ]);
 
                     $userData[$sub->user_id]['_decide'][$paramToDecide][$valueToDecide]['start_time'] = max($startTimes);
@@ -243,7 +243,7 @@ SQL;
                 $percentiles[25],
                 $percentiles[50],
                 $percentiles[75],
-                $percentiles[100]
+                $percentiles[100],
             );
             $i++;
         }

@@ -58,11 +58,11 @@ class CustomerLifetimeValueCriteriaTest extends DatabaseTestCase
             3,
             5,
             7,
-            9
+            9,
         );
 
         $this->assertTrue(
-            $this->evaluate($user, ['bucket_25'])
+            $this->evaluate($user, ['bucket_25']),
         );
     }
 
@@ -78,10 +78,10 @@ class CustomerLifetimeValueCriteriaTest extends DatabaseTestCase
             3,
             5,
             7,
-            9
+            9,
         );
         $this->assertFalse(
-            $this->evaluate($user, ['bucket_25', 'bucket_50', 'bucket_100'])
+            $this->evaluate($user, ['bucket_25', 'bucket_50', 'bucket_100']),
         );
     }
 
@@ -89,14 +89,14 @@ class CustomerLifetimeValueCriteriaTest extends DatabaseTestCase
     {
         $user = $this->userManager->addNewUser('foo@example.com');
         $this->assertFalse(
-            $this->evaluate($user, ['bucket_25'])
+            $this->evaluate($user, ['bucket_25']),
         );
     }
 
     private function evaluate($user, array $values)
     {
         $conditionValues = (object) [
-            'selection' => $values
+            'selection' => $values,
         ];
 
         $query = $this->usersRepository->getTable();
