@@ -29,7 +29,7 @@ class CustomerLifetimeValue extends BaseLazyWidget
         $this->customerLifetimeValuesRepository = $customerLifetimeValuesRepository;
     }
 
-    public function header($id = '')
+    public function header()
     {
         return 'Customer lifetime value';
     }
