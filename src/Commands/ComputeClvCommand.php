@@ -51,7 +51,7 @@ class ComputeClvCommand extends Command
             );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption('memory_limit')) {
             ini_set('memory_limit', $input->getOption('memory_limit') .'M');
